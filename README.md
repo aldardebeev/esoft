@@ -17,6 +17,9 @@
 
 <h3>Чтобы запустить проект, выполните команду :</h3>
 
-<h3>```make start```</h3>
+```make start```
 
 Swagger прослушивает - localhost:85/docs
+
+Чтобы создать админа, выполните команду:
+```make create_admin email=your_email@example.com```
