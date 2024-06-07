@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+    nginx:
+        container_name: nginx-esoft
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - "85:80"
+        volumes:
+            - ../..:/var/www/html
+            - ./app/.env:/var/www/html/.env
+            - ./nginx/:/etc/nginx/conf.d/
+        networks:
+            - local-run
+
+    app:
+        container_name: app-esoft
+        build:
+            context: ../..
+            dockerfile: ./.deploy/local/app/Dockerfile
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www/html
+        volumes:
+            - ../..:/var/www/html
+            - ./app/.env:/var/www/html/.env
+        environment:
+            PHP_IDE_CONFIG: "serverName=host-gateway"
+        networks:
+            - local-run
+
+    db:
+        container_name: db-esoft
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_DB: "backend"
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: 1234
+        volumes:
+            - ./db:/var/lib/postgresql/data
+        ports:
+            - "5436:5432"
+        networks:
+            - local-run
+
+networks:
+    local-run:
+        driver: bridge
